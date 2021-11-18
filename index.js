@@ -24,6 +24,7 @@ async function run() {
     await client.connect();
     const database = client.db("travel");
     const serviceCollection = database.collection("services");
+    const winterOfferCollection = database.collection("winter");
     const orderCollection = database.collection("orders");
     //   get data from database
     app.get("/services", async (req, res) => {
@@ -31,12 +32,12 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-    // send data from ui
+    //-----------send data from ui-----------
     app.post("/addservice", async (req, res) => {
       const service = req.body;
-      //   console.log("hit api", service);
       const postResult = await serviceCollection.insertOne(service);
       res.json(postResult);
+      // console.log(postResult);
     });
     // get single product
     app.get("/services/:id", async (req, res) => {
@@ -50,7 +51,15 @@ async function run() {
     app.post("/purchesitem", async (req, res) => {
       const order = req.body;
       const postorder = await orderCollection.insertOne(order);
-      res.send(postorder);
+      // console.log(postorder);
+      res.json(postorder);
+    });
+    // all orders
+    app.get("/purchesitem", async (req, res) => {
+      const order = req.body;
+      const postorder = await orderCollection.find({}).toArray();
+      // console.log(postorder);
+      res.json(postorder);
     });
     // getting product using email
     app.get("/purchesitem/:email", async (req, res) => {
@@ -75,3 +84,6 @@ run().catch(console.dir);
 app.listen(port, () => {
   console.log("connected! in ", port);
 });
+/* 
+https://pure-crag-33813.herokuapp.com/
+ */
